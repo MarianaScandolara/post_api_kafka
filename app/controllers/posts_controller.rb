@@ -22,6 +22,7 @@ class PostsController < ApplicationController
     else
       render json: @post.errors, status: :unprocessable_entity
     end
+    $kafka_producer.produce(@post.to_json, topic: "post_events")
   end
 
   # PATCH/PUT /posts/1
@@ -46,6 +47,6 @@ class PostsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def post_params
-      params.require(:post).permit(:title, :string, :text, :string, :author)
+      params.require(:post).permit(:title, :text, :author)
     end
 end
